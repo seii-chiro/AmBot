@@ -1,12 +1,13 @@
 import SafeAreaViewWrapper from "@/components/safe-area-view-wrapper";
 import ThemedText from "@/components/themed-text";
+import { Colors } from "@/constants/theme";
 import { Conversation } from "@/hooks/useMessageHistory";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { router } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, useColorScheme, View } from "react-native";
 
 export async function loadConversations(): Promise<Conversation[]> {
   try {
@@ -36,10 +37,15 @@ function CustomDrawerContent(props: any) {
         <ThemedText type="title">AmBot</ThemedText>
       </View>
 
-      <DrawerItem
-        label={() => <ThemedText type="subtitle">New Conversation</ThemedText>}
-        onPress={() => props.navigation.navigate("index")}
-      />
+      <Pressable
+        style={styles.newConversationButton}
+        onPress={() => {
+          router.push({ pathname: `/` as any });
+          props.navigation.closeDrawer();
+        }}
+      >
+        <ThemedText type="subtitle">New Conversation</ThemedText>
+      </Pressable>
 
       <ThemedText type="subtitle" style={{ padding: 10 }}>
         History
@@ -64,6 +70,9 @@ function CustomDrawerContent(props: any) {
 }
 
 export default function RootLayout() {
+  const colorScheme = useColorScheme();
+  const theme = colorScheme ? Colors[colorScheme] : Colors.light;
+
   return (
     <SafeAreaViewWrapper>
       <Drawer
@@ -71,6 +80,7 @@ export default function RootLayout() {
         screenOptions={{
           headerShown: false,
           drawerStyle: {
+            backgroundColor: theme.background,
             borderTopRightRadius: 0,
             borderBottomRightRadius: 0,
           },
@@ -90,5 +100,8 @@ const styles = StyleSheet.create({
   drawerHeaderText: {
     fontSize: 24,
     fontWeight: "bold",
+  },
+  newConversationButton: {
+    padding: 10,
   },
 });
