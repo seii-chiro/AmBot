@@ -87,9 +87,8 @@ function CustomDrawerContent(props: any) {
                     text: "Clear", 
                     style: "destructive",
                     onPress: async () => {
-                      // await AsyncStorage.removeItem("conversations");
-                      // setConversations([]);
-                      console.log("Deleting")
+                      await AsyncStorage.removeItem("conversations");
+                      setConversations([]);
                     } 
                   },
                 ]
