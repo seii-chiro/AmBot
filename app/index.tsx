@@ -8,11 +8,11 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import { IconSymbol } from "./components/icon-symbol";
-import ThemedPressable from "./components/themed-pressable";
-import { ThemedText } from "./components/themed-text";
-import ThemedTextInput from "./components/themed-text-input";
-import { ThemedView } from "./components/themed-view";
+import IconSymbol from "../components/icon-symbol";
+import ThemedPressable from "../components/themed-pressable";
+import ThemedText from "../components/themed-text";
+import ThemedTextInput from "../components/themed-text-input";
+import ThemedView from "../components/themed-view";
 
 export type MessagesHistory = {
   role: "user" | "assistant";
