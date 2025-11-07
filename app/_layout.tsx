@@ -7,7 +7,7 @@ import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { router } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, useColorScheme, View } from "react-native";
+import { Alert, Pressable, StyleSheet, useColorScheme, View } from "react-native";
 
 export async function loadConversations(): Promise<Conversation[]> {
   try {
@@ -32,39 +32,79 @@ function CustomDrawerContent(props: any) {
   }, []);
 
   return (
-    <DrawerContentScrollView {...props}>
-      <View style={styles.drawerHeader}>
-        <ThemedText type="title">AmBot</ThemedText>
+    <DrawerContentScrollView 
+      {...props}
+      contentContainerStyle={{ flex: 1 }}
+    >
+      <View style={{ flex: 1 }}>
+        <View style={styles.drawerHeader}>
+          <ThemedText type="title">AmBot</ThemedText>
+        </View>
+
+        <Pressable
+          style={styles.newConversationButton}
+          onPress={() => {
+            router.push({ pathname: `/` as any });
+            props.navigation.closeDrawer();
+          }}
+        >
+          <ThemedText type="subtitle">New Conversation</ThemedText>
+        </Pressable>
+
+        <ThemedText type="subtitle" style={{ padding: 10 }}>
+          History
+        </ThemedText>
+
+        {conversations.length > 0 ? (
+          conversations.map((conversation) => (
+            <DrawerItem
+              key={conversation.id}
+              label={conversation.title}
+              onPress={() => {
+                router.push({ pathname: `/${conversation.id}` as any });
+                props.navigation.closeDrawer();
+              }}
+            />
+          ))
+        ) : (
+          <ThemedText style={{ padding: 10 }}>No history available.</ThemedText>
+        )}
       </View>
+      
+      {/* Drawer Footer */}
+      <View style={styles.drawerFooter}>
+        <Pressable 
+          style={styles.clearButton}
+          onPress={async () => {
+            try {
 
-      <Pressable
-        style={styles.newConversationButton}
-        onPress={() => {
-          router.push({ pathname: `/` as any });
-          props.navigation.closeDrawer();
-        }}
-      >
-        <ThemedText type="subtitle">New Conversation</ThemedText>
-      </Pressable>
-
-      <ThemedText type="subtitle" style={{ padding: 10 }}>
-        History
-      </ThemedText>
-
-      {conversations.length > 0 ? (
-        conversations.map((conversation) => (
-          <DrawerItem
-            key={conversation.id}
-            label={conversation.title}
-            onPress={() => {
-              router.push({ pathname: `/${conversation.id}` as any });
+              Alert.alert(
+                "Clear All Conversations",
+                "Are you sure you want to clear all conversations? This action cannot be undone.",
+                [
+                  { text: "Cancel", style: "cancel" },
+                  { 
+                    text: "Clear", 
+                    style: "destructive",
+                    onPress: async () => {
+                      // await AsyncStorage.removeItem("conversations");
+                      // setConversations([]);
+                      console.log("Deleting")
+                    } 
+                  },
+                ]
+              );
               props.navigation.closeDrawer();
-            }}
-          />
-        ))
-      ) : (
-        <ThemedText style={{ padding: 10 }}>No history available.</ThemedText>
-      )}
+            } catch (e) {
+              console.error("Error clearing conversations:", e);
+            }
+          }}
+        >
+          <ThemedText style={styles.clearButtonText}>
+            Clear All Conversations
+          </ThemedText>
+        </Pressable>
+      </View>
     </DrawerContentScrollView>
   );
 }
@@ -103,5 +143,26 @@ const styles = StyleSheet.create({
   },
   newConversationButton: {
     padding: 10,
+  },
+  drawerFooter: {
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: "#ddd",
+    alignItems: 'center',
+  },
+  drawerFooterText: {
+    fontSize: 12,
+    opacity: 0.6,
+  },
+  clearButton: {
+    padding: 10,
+    backgroundColor: '#d83c3cff',
+    borderRadius: 8,
+    width: '100%',
+    alignItems: 'center',
+  },
+  clearButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
