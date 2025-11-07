@@ -15,7 +15,7 @@ const Header = () => {
       <Pressable onPress={() => navigation.toggleDrawer()} style={styles.sidebarIcon}>
         <Octicons 
           name={isOpen ? "sidebar-expand" : "sidebar-collapse"} 
-          size={24} 
+          size={20} 
           color="black" 
         />
       </Pressable>
@@ -32,9 +32,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 10,
-    backgroundColor: "#f0f0f0",
+    paddingVertical: 15,
     flexDirection: "row",
-    elevation: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e7e7e7ff",
   },
   sidebarIcon: {
     position: "absolute",
