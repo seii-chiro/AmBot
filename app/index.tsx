@@ -1,4 +1,9 @@
+import Header from "@/components/header";
 import { Colors } from "@/constants/theme";
+import useMessageHistory, {
+  Conversation,
+  MessagesHistory,
+} from "@/hooks/useMessageHistory";
 import React, { useRef, useState } from "react";
 import {
   FlatList,
@@ -14,10 +19,7 @@ import ThemedText from "../components/themed-text";
 import ThemedTextInput from "../components/themed-text-input";
 import ThemedView from "../components/themed-view";
 
-export type MessagesHistory = {
-  role: "user" | "assistant";
-  content: string;
-};
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export interface Messages {
   id: number;
@@ -27,14 +29,38 @@ export interface Messages {
   isStreaming?: boolean;
 }
 
-type PayloadHistory = {
-  model: "llama3.1:8b-instruct-q5_K_M";
-  messages: MessagesHistory[];
+export const saveConversation = async (conversation: Conversation) => {
+  try {
+    // Get existing conversations
+    const existingConversations = await AsyncStorage.getItem("conversations");
+    const conversations: Conversation[] = existingConversations
+      ? JSON.parse(existingConversations)
+      : [];
+
+    // Check if conversation already exists (update) or add new
+    const existingIndex = conversations.findIndex(
+      (c) => c.id === conversation.id
+    );
+    if (existingIndex >= 0) {
+      conversations[existingIndex] = conversation;
+    } else {
+      conversations.unshift(conversation); // Add to beginning
+    }
+
+    await AsyncStorage.setItem("conversations", JSON.stringify(conversations));
+  } catch (e) {
+    console.error("Error saving conversation:", e);
+  }
 };
 
 const Index = () => {
   const colorScheme = useColorScheme();
   const theme = colorScheme ? Colors[colorScheme] : Colors.light;
+
+  const { payload, setPayload } = useMessageHistory();
+
+  // Generate conversation ID on first user message
+  const [conversationId] = useState(() => Date.now().toString());
 
   const [messages, setMessages] = useState<Messages[]>([
     {
@@ -44,12 +70,10 @@ const Index = () => {
       timestamp: new Date(),
     },
   ]);
+
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [payload, setPayload] = useState<PayloadHistory>({
-    model: "llama3.1:8b-instruct-q5_K_M",
-    messages: [],
-  });
+
   const flatListRef = useRef<FlatList>(null);
 
   const updatePayload = (newMessage: MessagesHistory) => {
@@ -194,10 +218,22 @@ const Index = () => {
         }, 100);
 
         // Add AI response to payload history
-        updatePayload({
+        const aiResponse: MessagesHistory = {
           role: "assistant",
           content: cleanedText,
-        });
+        };
+        updatePayload(aiResponse);
+
+        // Save the entire conversation
+        const conversation: Conversation = {
+          id: conversationId,
+          title:
+            payload.messages[0]?.content.slice(0, 50) ||
+            currentInput.slice(0, 50),
+          timestamp: new Date(),
+          messages: [...nextPayload.messages, aiResponse],
+        };
+        await saveConversation(conversation);
       } catch (error) {
         setMessages((prev) =>
           prev.map((msg) =>
@@ -262,6 +298,8 @@ const Index = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <ThemedView style={styles.container}>
+        <Header />
+
         <FlatList
           ref={flatListRef}
           data={messages}
