@@ -13,11 +13,11 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import IconSymbol from "../components/icon-symbol";
-import ThemedPressable from "../components/themed-pressable";
-import ThemedText from "../components/themed-text";
-import ThemedTextInput from "../components/themed-text-input";
-import ThemedView from "../components/themed-view";
+import IconSymbol from "../../components/icon-symbol";
+import ThemedPressable from "../../components/themed-pressable";
+import ThemedText from "../../components/themed-text";
+import ThemedTextInput from "../../components/themed-text-input";
+import ThemedView from "../../components/themed-view";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -204,10 +204,10 @@ const Index = () => {
           prev.map((msg) =>
             msg.id === thinkingId
               ? {
-                  ...msg,
-                  text: cleanedText,
-                  isStreaming: false,
-                }
+                ...msg,
+                text: cleanedText,
+                isStreaming: false,
+              }
               : msg
           )
         );
@@ -239,14 +239,13 @@ const Index = () => {
           prev.map((msg) =>
             msg.id === thinkingId
               ? {
-                  ...msg,
-                  text: `Error: ${
-                    error instanceof Error
-                      ? error.message
-                      : "Unknown error occurred"
+                ...msg,
+                text: `Error: ${error instanceof Error
+                    ? error.message
+                    : "Unknown error occurred"
                   }`,
-                  isStreaming: false,
-                }
+                isStreaming: false,
+              }
               : msg
           )
         );
