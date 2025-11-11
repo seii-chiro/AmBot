@@ -28,7 +28,6 @@ export async function loadConversations(): Promise<Conversation[]> {
 
 function CustomDrawerContent(props: any) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  usePushNotification();
 
   useEffect(() => {
     const fetchConversations = async () => {
@@ -115,6 +114,7 @@ function CustomDrawerContent(props: any) {
 export default function ChatLayout() {
   const colorScheme = useColorScheme();
   const theme = colorScheme ? Colors[colorScheme] : Colors.light;
+  usePushNotification();
 
   return (
     <>
