@@ -1,8 +1,8 @@
-import PushNotification from "@/components/push-notification";
 import SafeAreaViewWrapper from "@/components/safe-area-view-wrapper";
 import ThemedText from "@/components/themed-text";
 import { Colors } from "@/constants/theme";
 import { Conversation } from "@/hooks/useMessageHistory";
+import { usePushNotification } from "@/hooks/usePushNotification";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { router } from "expo-router";
@@ -28,6 +28,7 @@ export async function loadConversations(): Promise<Conversation[]> {
 
 function CustomDrawerContent(props: any) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  usePushNotification();
 
   useEffect(() => {
     const fetchConversations = async () => {
@@ -117,7 +118,6 @@ export default function ChatLayout() {
 
   return (
     <>
-      <PushNotification />
       <SafeAreaViewWrapper>
         <Drawer
           drawerContent={(props) => <CustomDrawerContent {...props} />}
