@@ -1,10 +1,10 @@
-import { Stack } from 'expo-router'
-import React from 'react'
+import { usePushNotification } from "@/hooks/usePushNotification";
+import { Stack } from "expo-router";
+import React from "react";
 
 const RootLayout = () => {
-    return (
-        <Stack screenOptions={{ headerShown: false }} />
-    )
-}
+  usePushNotification();
+  return <Stack screenOptions={{ headerShown: false }} />;
+};
 
-export default RootLayout
+export default RootLayout;
