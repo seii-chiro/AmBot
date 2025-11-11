@@ -1,3 +1,4 @@
+import PushNotification from "@/components/push-notification";
 import SafeAreaViewWrapper from "@/components/safe-area-view-wrapper";
 import ThemedText from "@/components/themed-text";
 import { Colors } from "@/constants/theme";
@@ -7,7 +8,13 @@ import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { router } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { useEffect, useState } from "react";
-import { Alert, Pressable, StyleSheet, useColorScheme, View } from "react-native";
+import {
+  Alert,
+  Pressable,
+  StyleSheet,
+  useColorScheme,
+  View,
+} from "react-native";
 
 export async function loadConversations(): Promise<Conversation[]> {
   try {
@@ -32,10 +39,7 @@ function CustomDrawerContent(props: any) {
   }, []);
 
   return (
-    <DrawerContentScrollView
-      {...props}
-      contentContainerStyle={{ flex: 1 }}
-    >
+    <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
         <View style={styles.drawerHeader}>
           <ThemedText type="title">AmBot</ThemedText>
@@ -77,7 +81,6 @@ function CustomDrawerContent(props: any) {
           style={styles.clearButton}
           onPress={async () => {
             try {
-
               Alert.alert(
                 "Clear All Conversations",
                 "Are you sure you want to clear all conversations? This action cannot be undone.",
@@ -89,7 +92,7 @@ function CustomDrawerContent(props: any) {
                     onPress: async () => {
                       await AsyncStorage.removeItem("conversations");
                       setConversations([]);
-                    }
+                    },
                   },
                 ]
               );
@@ -113,19 +116,22 @@ export default function ChatLayout() {
   const theme = colorScheme ? Colors[colorScheme] : Colors.light;
 
   return (
-    <SafeAreaViewWrapper>
-      <Drawer
-        drawerContent={(props) => <CustomDrawerContent {...props} />}
-        screenOptions={{
-          headerShown: false,
-          drawerStyle: {
-            backgroundColor: theme.background,
-            borderTopRightRadius: 0,
-            borderBottomRightRadius: 0,
-          },
-        }}
-      />
-    </SafeAreaViewWrapper>
+    <>
+      <PushNotification />
+      <SafeAreaViewWrapper>
+        <Drawer
+          drawerContent={(props) => <CustomDrawerContent {...props} />}
+          screenOptions={{
+            headerShown: false,
+            drawerStyle: {
+              backgroundColor: theme.background,
+              borderTopRightRadius: 0,
+              borderBottomRightRadius: 0,
+            },
+          }}
+        />
+      </SafeAreaViewWrapper>
+    </>
   );
 }
 
@@ -147,7 +153,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopWidth: 1,
     borderTopColor: "#ddd",
-    alignItems: 'center',
+    alignItems: "center",
   },
   drawerFooterText: {
     fontSize: 12,
@@ -155,13 +161,13 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     padding: 10,
-    backgroundColor: '#d83c3cff',
+    backgroundColor: "#d83c3cff",
     borderRadius: 8,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
   },
   clearButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
