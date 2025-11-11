@@ -295,6 +295,7 @@ const Index = () => {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 20}
     >
       <ThemedView style={styles.container}>
         <Header />
