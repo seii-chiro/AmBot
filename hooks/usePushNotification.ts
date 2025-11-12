@@ -67,10 +67,23 @@ export const usePushNotification = (): PushNotificationState => {
     }
   }
 
+  async function registerExpoTokenWithServer(token: string) {
+    await fetch("http://192.168.1.30:8001/api/register-expo-token/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token, user: 2 }),
+    });
+  }
+
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
+    registerForPushNotificationsAsync().then((token) => {
+      setExpoPushToken(token);
+      if (token) {
+        registerExpoTokenWithServer(token.data);
+      }
+    });
 
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
