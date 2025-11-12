@@ -1,22 +1,32 @@
+import { Colors } from "@/constants/theme";
 import Octicons from "@expo/vector-icons/Octicons";
-import { DrawerNavigationProp, useDrawerStatus } from "@react-navigation/drawer";
+import {
+  DrawerNavigationProp,
+  useDrawerStatus,
+} from "@react-navigation/drawer";
 import { useNavigation } from "expo-router";
 import React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, useColorScheme, View } from "react-native";
 import ThemedText from "./themed-text";
 
 const Header = () => {
-  const navigation = useNavigation<DrawerNavigationProp<Record<string, undefined>>>();
+  const navigation =
+    useNavigation<DrawerNavigationProp<Record<string, undefined>>>();
   const drawerStatus = useDrawerStatus();
   const isOpen = drawerStatus === "open";
+  const colorScheme = useColorScheme();
+  const theme = colorScheme ? Colors[colorScheme] : Colors.light;
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => navigation.toggleDrawer()} style={styles.sidebarIcon}>
-        <Octicons 
-          name={isOpen ? "sidebar-expand" : "sidebar-collapse"} 
-          size={20} 
-          color="black" 
+      <Pressable
+        onPress={() => navigation.toggleDrawer()}
+        style={styles.sidebarIcon}
+      >
+        <Octicons
+          name={isOpen ? "sidebar-expand" : "sidebar-collapse"}
+          size={20}
+          color={theme.text}
         />
       </Pressable>
       <ThemedText type="subtitle">AmBot</ThemedText>
@@ -40,5 +50,5 @@ const styles = StyleSheet.create({
   sidebarIcon: {
     position: "absolute",
     left: 10,
-  }
+  },
 });

@@ -28,6 +28,8 @@ export async function loadConversations(): Promise<Conversation[]> {
 
 function CustomDrawerContent(props: any) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const colorScheme = useColorScheme();
+  const theme = colorScheme ? Colors[colorScheme] : Colors.light;
 
   useEffect(() => {
     const fetchConversations = async () => {
@@ -64,6 +66,7 @@ function CustomDrawerContent(props: any) {
             <DrawerItem
               key={conversation.id}
               label={conversation.title}
+              labelStyle={{ color: theme.text }}
               onPress={() => {
                 router.push({ pathname: `/${conversation.id}` as any });
                 props.navigation.closeDrawer();

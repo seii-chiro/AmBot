@@ -97,7 +97,7 @@ const Index = () => {
 
   const sendMessageToAPI = async (messageHistory: MessagesHistory[]) => {
     try {
-      const response = await fetch("http://192.168.1.78:8005/rag/stream", {
+      const response = await fetch("http://192.168.1.30:8005/rag/stream", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
